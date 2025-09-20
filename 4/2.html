@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const userName = prompt("Введите ваше имя")
+        if (userName == "" || userName == null) {
+            alert("Имя пустое")
+        }
+        else if (userName.length > 2) {
+                if (userName.length > 50) {
+                    alert("Имя слишком длинное")
+                }
+                else {
+                    alert(userName)
+                }
+
+            }
+            else alert("имя слишком короткое")
+        
+
+
+    </script>
+</body>
+</html>
+
