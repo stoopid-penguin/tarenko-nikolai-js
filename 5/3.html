@@ -9,14 +9,14 @@
     <script>
         let N = parseInt(prompt('Введите целое положительное число'));
         if (!Number.isInteger(N) || N <= 0) {
-        alert('введено не целое положительное число');
+            alert('введено не целое положительное число');
         } else {
-        console.log(`Делители числа ${N}:`);
-        for (let i = 1; i <= N; i++) {
-            if (N % i === 0) {
-            console.log(i);
+            console.log(`Делители числа ${N}:`);
+            for (let i = 1; i <= N; i++) {
+                if (N % i === 0) {
+                console.log(i);
+                }
             }
-        }
         }
     </script>
 </body>
