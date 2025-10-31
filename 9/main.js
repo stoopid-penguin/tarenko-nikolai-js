@@ -1,4 +1,51 @@
-const wrapper = document.querySelector('#outputContainer')
+const userName = prompt('Ведите name');
+const userEmail = prompt('Ведите email');
+const userPhone = prompt('Ведите phone');
+
+async function createUser(user) {
+    try {
+        const res = await fetch (`https://jsonplaceholder.typicode.com/users`, {
+            method: "POST"
+            
+        })
+        const newUser = await res.json();
+        console.log('user created!')
+    } catch(e) {
+        console.error(`Не удалось добавить пользователя ${e}`)
+    }
+}
+
+createUser({
+    name: userName,
+    email: userEmail,
+    phone: userPhone
+}
+);
+const postTitle = prompt('Ведите postTitle');
+const postBody = prompt('Ведите postBody');
+const postUserId = prompt('Ведите postUserId');
+
+async function createPost(post) {
+    try {
+        const res = await fetch (`https://jsonplaceholder.typicode.com/posts`, {
+            method: "POST"
+            
+        })
+        const newPost = await res.json();
+        console.log('post created!')
+    } catch(e) {
+        console.error(`Не удалось добавить почту ${e}`)
+    }
+}
+
+createPost({
+  title: postTitle,
+  body: postBody,
+  userId: postUserId
+}
+);
+
+/* const wrapper = document.querySelector('#outputContainer')
 async function getProducts() {
     try {
         const res = await fetch ('https://fakestoreapi.com/products')
@@ -21,29 +68,8 @@ async function getProduct(id) {
     }
 }
 
-getProduct(10);
-
-async function createProduct(product) {
-    try {
-        const res = await fetch (`https://fakestoreapi.com/products`, {
-            method: "POST"
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(product)
-
-        })
-        const newProduct = await res.json();
-        console.log('product created!')
-    } catch(e) {
-        console.error(`Не удалось добавить продукт ${e}`)
-    }
-}
-
-createProduct({
-    title: 'NFT Носки',
-    price: 100
-});
-
-async function updateProduct(product, id) {
+getProduct(10); */
+/* async function updateProduct(product, id) {
     try {
         const res = await fetch (`https://fakestoreapi.com/products/${id}`, {
             method: "PUT"
@@ -75,4 +101,4 @@ async function deleteProduct(id) {
     }
 }
 
-deleteProduct(10);
+deleteProduct(10); */
