@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Создание поста</title>
+    <title>Создание поста + список</title>
     <style>
         * {
             margin: 0;
@@ -21,29 +21,15 @@
             padding: 20px;
         }
 
-        /* Карточка формы */
         .form-container {
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 40px;
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
-            animation: fadeIn 0.5s ease-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Заголовок */
         h1 {
             color: #333;
             margin-bottom: 10px;
@@ -58,7 +44,6 @@
             font-size: 14px;
         }
 
-        /* Поля ввода */
         .form-group {
             margin-bottom: 20px;
         }
@@ -92,7 +77,6 @@
             min-height: 120px;
         }
 
-        /* Кнопка (увеличение при наведении) */
         .submit-btn {
             width: 100%;
             padding: 14px;
@@ -115,29 +99,16 @@
             transform: scale(0.98);
         }
 
-        /* Блок с результатом */
         .result {
             margin-top: 25px;
             padding: 15px;
             background: #f8f9fa;
             border-radius: 12px;
             display: none;
-            animation: slideUp 0.3s ease-out;
         }
 
         .result.show {
             display: block;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .result h3 {
@@ -146,24 +117,11 @@
             font-size: 18px;
         }
 
-        .result h4 {
-            color: #333;
-            margin: 10px 0 5px;
-            font-size: 14px;
-        }
-
-        .result p {
-            color: #555;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
         .result .post-id {
             color: #667eea;
             font-weight: bold;
         }
 
-        /* Индикатор загрузки */
         .loading {
             display: none;
             text-align: center;
@@ -190,12 +148,81 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Адаптивность */
+        /* Стили для списка постов */
+        .posts-section {
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 25px;
+        }
+
+        .posts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .posts-header h3 {
+            color: #333;
+            font-size: 18px;
+        }
+
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .posts-list {
+            max-height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .post-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 12px;
+            border-left: 3px solid #667eea;
+        }
+
+        .post-item strong {
+            color: #333;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .post-item small {
+            color: #667eea;
+            font-size: 11px;
+        }
+
+        .post-item p {
+            color: #555;
+            font-size: 13px;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .empty-posts {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+            font-size: 14px;
+        }
+
         @media (max-width: 600px) {
             .form-container {
                 padding: 25px;
             }
-            
             h1 {
                 font-size: 24px;
             }
@@ -204,28 +231,18 @@
 </head>
 <body>
     <div class="form-container">
-        <h1> Создать пост</h1>
+        <h1>📝 Создать пост</h1>
+        <div class="subtitle">Заполните форму — пост появится в ленте</div>
 
         <form id="postForm">
             <div class="form-group">
                 <label>Заголовок</label>
-                <input 
-                    type="text" 
-                    id="title" 
-                    required
-                    autocomplete="off"
-                >
+                <input type="text" id="title" required autocomplete="off">
             </div>
-
             <div class="form-group">
                 <label>Текст поста</label>
-                <textarea 
-                    id="body" 
-                    required
-                >
-                </textarea>
+                <textarea id="body" required></textarea>
             </div>
-
             <button type="submit" class="submit-btn">Отправить</button>
         </form>
 
@@ -234,6 +251,17 @@
         </div>
 
         <div class="result" id="result"></div>
+
+        <!-- Блок со списком постов -->
+        <div class="posts-section">
+            <div class="posts-header">
+                <h3>📋 Все посты</h3>
+                <button class="refresh-btn" id="refreshBtn">Обновить</button>
+            </div>
+            <div id="postsList" class="posts-list">
+                <div class="empty-posts">Загрузка...</div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -241,6 +269,45 @@
         const form = document.getElementById('postForm');
         const resultDiv = document.getElementById('result');
         const loadingDiv = document.getElementById('loading');
+        const postsList = document.getElementById('postsList');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        // экранирование 
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // загрузка и отображение постов
+        async function loadPosts() {
+            postsList.innerHTML = '<div class="empty-posts">Загрузка</div>';
+            try {
+                const res = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10');
+                const posts = await res.json();
+                if (posts.length === 0) {
+                    postsList.innerHTML = '<div class="empty-posts">Нет постов</div>';
+                    return;
+                }
+                let html = '';
+                for (let p of posts) {
+                    html += `
+                        <div class="post-item">
+                            <strong>${escapeHtml(p.title)}</strong>
+                            <small>ID: ${p.id}</small>
+                            <p>${escapeHtml(p.body.length > 100 ? p.body.slice(0, 100) + '...' : p.body)}</p>
+                        </div>
+                    `;
+                }
+                postsList.innerHTML = html;
+            } catch (err) {
+                postsList.innerHTML = '<div class="empty-posts">Ошибка загрузки</div>';
+            }
+        }
 
         // создаем обработчик отправки POST-запроса
         form.addEventListener('submit', async (e) => {
@@ -249,17 +316,7 @@
             // получаем данные из формы
             const title = document.getElementById('title').value;
             const body = document.getElementById('body').value;
-            
-            // формируем объект поста
-            const newPost = {
-                title: title,
-                body: body,
-                userId: 1
-            };
-
-            // показываем индикатор загрузки
-            loadingDiv.classList.add('show');
-            resultDiv.classList.remove('show');
+    
             
             try {
                 // отправляем POST-запрос
@@ -268,7 +325,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(newPost)
+                    body: JSON.stringify({ title, body, userId: 1 })
                 });
 
                 const data = await response.json();
@@ -287,9 +344,10 @@
                 // очищаем форму
                 form.reset();
             
-            // для ошибок
-            } catch (error) {
-                resultDiv.innerHTML = `
+
+                // обновляем список постов
+                await loadPosts();
+            } catch (error) {resultDiv.innerHTML = `
                     <h3 style="color: #dc3545;">❌ Ошибка</h3>
                     <p>Не удалось создать пост. Попробуйте ещё раз.</p>
                 `;
@@ -299,6 +357,61 @@
                 loadingDiv.classList.remove('show');
             }
         });
+
+        // обновление по кнопке
+        refreshBtn.addEventListener('click', loadPosts);
+
+        // загружаем посты при старте
+        loadPosts();
+
+
+        // задание с алгоритмом
+        /*
+        
+                //задаем какой-нидбудб массив
+                const arr=[
+                        { name: 'Борис', grade: 4, city: 'СПб' },
+                        { name: 'Вика', grade: 5, city: 'Москва' },
+                        { name: 'Глеб', grade: 3, city: 'Казань' },
+                        { name: 'Дима', grade: 4, city: 'Москва' }
+                    ]
+
+        //задаем новую функцию
+        function groupBy(arr, key) {
+    if (!Array.isArray(arr)) {
+        throw new TypeError('Первый аргумент должен быть массивом');
+    }
+    //задаем объект для вывода
+    const result = {};
+    
+    for (let i = 0; i < arr.length; i++) {
+        const item = arr[i];
+        
+        // получаем ключ для группировки
+        let groupKey;
+        if (typeof key === 'function') {
+            groupKey = key(item);
+        } else if (typeof key === 'string') {
+            groupKey = item?.[key];
+        } else {
+            throw new TypeError('key должен быть строкой или функцией');
+        }
+        
+        // undefined превращаем в строку 'undefined', чтобы он был нормальным ключом
+        const finalKey = groupKey === undefined ? 'undefined' : groupKey;
+        
+        if (!result[finalKey]) {
+            result[finalKey] = [];
+        }
+        result[finalKey].push(item);
+    }
+    
+    return result;
+}
+    console.log(JSON.stringify(arr,'grade'));
+
+
+        */
     </script>
 </body>
 </html>
